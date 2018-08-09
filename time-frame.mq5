@@ -13,14 +13,11 @@ int OnCalculate(const int RATES_TOTAL,
 		const long &VOLUME[],
 		const int &SPREAD[])
 {
-	Print("PREV_CALCULATED => ", PREV_CALCULATED);
-
 	static ENUM_TIMEFRAMES time_frame = Period();
 
 	if (PREV_CALCULATED == 0) {
 	// 時間軸を変更したあとの最初の OnCalculate() なら
-		Print("create_text() in first OnCalculate()");
-		create_text("TimeFrame", get_time_frame_by_string(Period()));
+		create_label("TimeFrame", get_time_frame_by_string(Period()));
 	}
 
 	if (time_frame != Period()) {
@@ -28,9 +25,23 @@ int OnCalculate(const int RATES_TOTAL,
 		create_text("TimeFrame", get_time_frame_by_string(Period()));
 	}
 
-	ObjectSetInteger(0, "TimeFrame", OBJPROP_XDISTANCE, 0);
-
 	return RATES_TOTAL;
+}
+
+void create_label(const string NAME, const string TEXT)
+{
+	ResetLastError();
+	if (!ObjectCreate(0, NAME, OBJ_LABEL, 0, 0, 0)) {
+		Print("ObjectCreate() failed by ", GetLastError());
+	}
+
+	ObjectSetInteger(0, NAME, OBJPROP_XDISTANCE, X);
+	ObjectSetInteger(0, NAME, OBJPROP_YDISTANCE, Y);
+	ObjectSetString(0, NAME, OBJPROP_TEXT, TEXT);
+	ObjectSetInteger(0, NAME, OBJPROP_FONTSIZE, FONT_SIZE);
+	ObjectSetInteger(0, NAME, OBJPROP_COLOR, clrWhite);
+
+	ChartRedraw(0);
 }
 
 void create_text(const string NAME, const string TEXT)
