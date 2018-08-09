@@ -1,6 +1,6 @@
 input int X = 20;
 input int Y = 20;
-input int FONT_SIZE = 20;
+input int FONT_SIZE = 50;
 
 int OnCalculate(const int RATES_TOTAL,
 		const int PREV_CALCULATED,
@@ -13,19 +13,18 @@ int OnCalculate(const int RATES_TOTAL,
 		const long &VOLUME[],
 		const int &SPREAD[])
 {
-	static ENUM_TIMEFRAMES time_frame = Period();
-
 	if (PREV_CALCULATED == 0) {
-	// 時間軸を変更したあとの最初の OnCalculate() なら
+	// "インジケータのロード直後または時間軸を変更した直後" の
+	// 最初の OnCalculate() なら
 		create_label("TimeFrame", get_time_frame_by_string(Period()));
 	}
 
-	if (time_frame != Period()) {
-		Print("create_text()");
-		create_text("TimeFrame", get_time_frame_by_string(Period()));
-	}
-
 	return RATES_TOTAL;
+}
+
+void OnDeinit(const int REASON)
+{
+	ObjectDelete(0, "TimeFrame");
 }
 
 void create_label(const string NAME, const string TEXT)
@@ -44,80 +43,51 @@ void create_label(const string NAME, const string TEXT)
 	ChartRedraw(0);
 }
 
-void create_text(const string NAME, const string TEXT)
-{
-	int nwin;
-	datetime time;
-	double price;
-
-	if (ObjectFind(0, NAME) == 0) {
-		Print("ObjectDelete()");
-		ObjectDelete(0, NAME);
-	}
-
-	ResetLastError();
-	if (!ChartXYToTimePrice(0, X, Y, nwin, time, price)) {
-		Print("ChartXYToTimePrice() failed by ", GetLastError());
-	}
-
-	ResetLastError();
-	Print("time => ", time, ", price => ", price);
-	if (!ObjectCreate(0, NAME, OBJ_TEXT, nwin, time, price)) {
-		Print("ObjectCreate() failed by ", GetLastError());
-	}
-
-	ObjectSetString(0, NAME, OBJPROP_TEXT, TEXT);
-	ObjectSetInteger(0, NAME, OBJPROP_FONTSIZE, FONT_SIZE);
-	ObjectSetInteger(0, NAME, OBJPROP_COLOR, clrWhite);
-
-	ChartRedraw(0);
-}
-
 string get_time_frame_by_string(const ENUM_TIMEFRAMES TIME_FRAME)
 {
 	switch (TIME_FRAME) {
 	case PERIOD_M1:
-		return "分足";
+		return "分";
 	case PERIOD_M2:
-		return "2分足";
+		return "2分";
 	case PERIOD_M3:
-		return "3分足";
+		return "3分";
 	case PERIOD_M4:
-		return "4分足";
+		return "4分";
 	case PERIOD_M5:
-		return "5分足";
+		return "5分";
 	case PERIOD_M6:
-		return "6分足";
+		return "6分";
 	case PERIOD_M10:
-		return "10分足";
+		return "10分";
 	case PERIOD_M12:
-		return "12分足";
+		return "12分";
 	case PERIOD_M15:
-		return "15分足";
+		return "15分";
 	case PERIOD_M20:
-		return "20分足";
+		return "20分";
 	case PERIOD_M30:
-		return "30分足";
+		return "30分";
 	case PERIOD_H1:
-		return "時間足";
+		return "時間";
 	case PERIOD_H2:
-		return "2時間足";
+		return "2時間";
 	case PERIOD_H3:
-		return "3時間足";
+		return "3時間";
 	case PERIOD_H4:
-		return "4時間足";
+		return "4時間";
 	case PERIOD_H6:
-		return "6時間足";
+		return "6時間";
 	case PERIOD_H8:
-		return "8時間足";
+		return "8時間";
 	case PERIOD_H12:
-		return "12時間足";
+		return "12時間";
 	case PERIOD_D1:
-		return "日足";
+		return "日";
 	case PERIOD_W1:
-		return "週足";
+		return "週";
 	case PERIOD_MN1:
-		return "月足";
+		return "月";
 	}
 
 	return "ERROR";
