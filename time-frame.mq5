@@ -50,6 +50,7 @@ void create_text(const string NAME, const string TEXT)
 	}
 
 	ResetLastError();
+	Print("time => ", time, ", price => ", price);
 	if (!ObjectCreate(0, NAME, OBJ_TEXT, nwin, time, price)) {
 		Print("ObjectCreate() failed by ", GetLastError());
 	}
